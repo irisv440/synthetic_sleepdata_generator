@@ -1,6 +1,7 @@
 # synthetic_sleepdata_generator
 This repository contains a Python script to generate synthetic sleep diary data ((SOL, WASO, TST, SE, etc.) based on the published summary statistics reported by Natale et al. (2009).
-The original summary statistics have been derived from actigraphy data but the current source was chosen because of the sample size being larger than usual and the clear information on which participants where included in the dataset from which the summary statistics were created. Although a bias may exist because actigraphy, for instance, usually underestimates the time it takes to fall asleep in comparison to subjective sleep diary entries, this source contains rich and reliable sleep data.
+The original summary statistics have been derived from actigraphy data. Still, the current source was chosen because of the sample size being larger than usual and the clear information on which participants where included in the dataset. 
+Although a bias may exist because actigraphy, for instance, usually underestimates the time it takes to fall asleep in comparison to subjective sleep diary entries, this source contains rich and reliable sleep data.
 
 The generator simulates 21 days of sleep variables for a sample of mock participants, separately for insomnia and control groups. 
 Distributions are defined using the published means and standard deviations, and synthetic time series are generated accordingly.
