@@ -16,16 +16,18 @@ Distributions are defined using the published means and standard deviations, and
 
 ## Project structure
 
-synthetic_sleepdata_generator/
-├── input/
-│   ├── natale2009_control_group_sleep_main_parameters.xlsx
-│   └── natale2009_insomnia_group_sleep_main_parameters.xlsx
-├── output/
-│   ├── synthetic_sleepdata_timeseries_control_gamma_clock.xlsx
-│   └── synthetic_sleepdata_timeseries_insomnia_gamma_clock.xlsx
-├── natale2009_based_synthetic_data_generator.py
-├── LICENSE
-└── README.md
+- `input/`  
+  Contains the Excel parameter files for the control and insomnia groups:
+  - `natale2009_control_group_sleep_main_parameters.xlsx`
+  - `natale2009_insomnia_group_sleep_main_parameters.xlsx`
+
+- `output/`  
+  Output folder where the generated `.xlsx` files are saved:
+  - `synthetic_sleepdata_timeseries_control_gamma_clock.xlsx`
+  - `synthetic_sleepdata_timeseries_insomnia_gamma_clock.xlsx`
+
+- `natale2009_based_synthetic_data_generator.py`  
+  Main Python script for generating the synthetic data
 
 ## How to use
 
@@ -42,7 +44,7 @@ Note: Make sure to use Python 3 and have `pandas` and `openpyxl` installed.
 
 ## Reference
 
-Natale V, Plazzi G, Martoni M. Actigraphic evaluation of insomnia: activity and sleep diary data describe the different dimensions of a complex syndrome. J Sleep Res. 2009 Sep;18(3):200–210. https://doi.org/10.1111/j.1365-2869.2008.00713.x
+Natale V, Plazzi G, Martoni M. Actigraphy in the assessment of insomnia: a quantitative approach. Sleep. 2009 Jun;32(6):767-71. doi: 10.1093/sleep/32.6.767. PMID: 19544753; PMCID: PMC2690564.
 
 ## Author
 
