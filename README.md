@@ -32,6 +32,7 @@ Both scripts simulate 21 days of data for each mock participant, separately for 
   Output folder where the generated `.xlsx` files are saved:
   - `synthetic_sleepdata_timeseries_control_gamma_clock.xlsx`
   - `synthetic_sleepdata_timeseries_insomnia_gamma_clock.xlsx`
+
   Output of the 'advanced' generator:
   - `synthetic_sleepdata_timeseries_control_augmented_jsonblock_only.xlsx`
   - `synthetic_sleepdata_timeseries_control_augmented.xlsx`
