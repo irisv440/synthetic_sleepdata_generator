@@ -128,17 +128,24 @@ def generate_time_series_sleepdata(parameter_path, output_path, days=21, n_parti
             wait_time = np.clip(np.random.normal(15, 10), 5, 30)
             out_of_bed_min = sleep_end_min + wait_time
             record["Out_of_Bed"] = out_of_bed_min
+            
             # Time in bed
             tib = out_of_bed_min - lights_off_min
             record["TIB"] = tib
+            
+            # TWT
+            twt = sol + waso
+            record["TWT"] = twt
+            
             # Total Sleep Time
-            tst = tib - (sol + waso)
+            tst = tib - (sol + waso) # alternatively: use tib - twt
             record["TST"] = tst
+            
             # Sleep efficiency
             se = (tst / tib) * 100 if tib > 0 else np.nan
             record["SE"] = se
-            # Midpoint of sleep based on lights_off
-            midpoint = (lights_off_min + sleep_end_min) / 2 # Alternatively, (lights_off_min + sol) + sleep_end_min
+            # Midpoint of sleep based on lights_off and time of getting out of bed
+            midpoint = (lights_off_min + out_of_bed_min) / 2 # Alternatively, (lights_off_min + sol) + sleep_end_min
             record["Midpoint"] = midpoint
 
             records.append(record)
@@ -154,11 +161,11 @@ def generate_time_series_sleepdata(parameter_path, output_path, days=21, n_parti
 
 # For standalone execution:
 def main():
-    parameter_path = base_path /"input/natale2009_control_group_sleep_main_parameters.xlsx"
-    # parameter_path = base_path /"input/natale2009_insomnia_group_sleep_main_parameters.xlsx"
+    # parameter_path = base_path /"input/natale2009_control_group_sleep_main_parameters.xlsx"
+    parameter_path = base_path /"input/natale2009_insomnia_group_sleep_main_parameters.xlsx"
 
-    output_path = base_path /"output/synthetic_sleepdata_timeseries_control_gamma_clock.xlsx"
-    # output_path = base_path /"output/synthetic_sleepdata_timeseries_insomnia_gamma_clock.xlsx"
+    # output_path = base_path /"output/synthetic_sleepdata_timeseries_control_gamma_clock.xlsx"
+    output_path = base_path /"output/synthetic_sleepdata_timeseries_insomnia_gamma_clock.xlsx"
     generate_time_series_sleepdata(parameter_path, output_path)
 
 if __name__ == "__main__":
