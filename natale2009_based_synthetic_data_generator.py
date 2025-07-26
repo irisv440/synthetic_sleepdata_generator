@@ -86,7 +86,7 @@ def generate_time_series_sleepdata(parameter_path, output_path, days=21, n_parti
     df_params.loc["Light Off", "SD"] *= 60
     df_params.loc["Sleep End", "SD"] *= 60
 
-
+    # Retrieve mean and SD for a given variable from the parameter table
     def get_params(var):
         return float(df_params.loc[var, "Mean"]), float(df_params.loc[var, "SD"])
 
@@ -96,8 +96,7 @@ def generate_time_series_sleepdata(parameter_path, output_path, days=21, n_parti
         for day in range(1, days + 1):
             record = {"Code": f"Mock_{pid:03d}", "Day": day}
             
-            # Generated sleep parameters:
-            
+            # Generated sleep parameters:          
             
             # Lights off (based on mean, SD from Natale et al., 2009)    
             mu_loff, sd_loff = get_params("Light Off")
