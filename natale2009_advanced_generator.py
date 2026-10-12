@@ -214,19 +214,17 @@ def generate_time_series_sleepdata(parameter_path, output_path, days=21, n_parti
         df[f"{col}_Clock"] = df[col].apply(lambda x: pd.to_datetime(x % (24 * 60), unit='m').strftime("%H:%M"))
     
 
-    # Build JSON-like column to include sleep variables to create a more realistic excel output (e.g. export from a website) 
+    # Build a JSON column that bundles the sleep variables per diary entry
     def build_sleep_json(row):
         start_time = pd.to_datetime(row["Lights_Off"] % (24*60), unit='m').strftime("%H:%M")
         end_time = pd.to_datetime(row["Sleep_End"] % (24*60), unit='m').strftime("%H:%M")
-        # sleep_in = int(round(row["SOL"]))
     
         json_data = {
-            "start": start_time,
-            "end": end_time,
-            #"values": [],  # optional: include other time series into values
-            "totals": {
-                "sl": int(round(row["SOL"])),
-                "wans": int(round(row["WASO"])),
+            "start_time": start_time,
+            "end_time": end_time,
+            "sleep_metrics": {
+                "sol": int(round(row["SOL"])),
+                "waso": int(round(row["WASO"])),
                 "twt": int(round(row["SOL"] + row["WASO"])),
                 "tib": int(round(row["TIB"])),
                 "tst": int(round(row["TST"])),
