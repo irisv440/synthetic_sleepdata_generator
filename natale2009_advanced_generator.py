@@ -41,6 +41,10 @@ import json
 
 base_path = Path(__file__).resolve().parent
 
+# Plausible range for time in bed, in minutes (0 to 14 hours)
+TIB_MIN = 0
+TIB_MAX = 14 * 60
+
 
 def generate_time_series_sleepdata(parameter_path, output_path, days=21, n_participants=300, seed=42):
     
@@ -130,49 +134,56 @@ def generate_time_series_sleepdata(parameter_path, output_path, days=21, n_parti
             }
 
             
-            # Generated sleep parameters:         
+            # Draw one night; redraw if the night is implausible
+            while True:         
             
-            # Lights off (based on mean, SD from Natale et al., 2009)    
-            mu_loff, sd_loff = get_params("Light Off")
-            lights_off_min = np.random.normal(mu_loff, sd_loff)
+                # Lights off (based on mean, SD from Natale et al., 2009)    
+                mu_loff, sd_loff = get_params("Light Off")
+                lights_off_min = np.random.normal(mu_loff, sd_loff)
+                
+                # Sleep End (based on mean, SD from Natale et al., 2009) 
+                mu_send, sd_send = get_params("Sleep End")
+                sleep_end_min = np.random.normal(mu_send, sd_send)
+                
+                # Sleep Onset Latency (based on mean, SD from Natale et al., 2009) 
+                mu_sol, sd_sol = get_params("SOL")
+                shape_sol = (mu_sol / sd_sol) ** 2
+                scale_sol = sd_sol ** 2 / mu_sol
+                sol = np.random.gamma(shape_sol, scale_sol)
+                
+                # Wake After Sleep Onset (based on mean, SD from Natale et al., 2009)
+                mu_waso, sd_waso = get_params("WASO")
+                shape_waso = (mu_waso / sd_waso) ** 2
+                scale_waso = sd_waso ** 2 / mu_waso
+                waso = np.random.gamma(shape_waso, scale_waso)
+            
+                # Derived sleep parameters:
+                
+                # Time between waking up and getting out of bed
+                wait_time = np.clip(np.random.normal(15, 10), 5, 30)
+                out_of_bed_min = sleep_end_min + wait_time
+                
+                # Time in bed
+                tib = out_of_bed_min - lights_off_min # Out of bed includes time between waking up & getting up
+                
+                # TWT
+                twt = sol + waso
+                
+                # Total Sleep Time
+                tst = tib - (sol + waso)
+                
+                # Keep the night only if it is plausible
+                if TIB_MIN < tib <= TIB_MAX and tst >= 0:
+                    break # go on after the while-loop
+                    
+            # Fill records after having obtained valid sleep metrics:
             record["Lights_Off"] = lights_off_min
-            
-            # Sleep End (based on mean, SD from Natale et al., 2009) 
-            mu_send, sd_send = get_params("Sleep End")
-            sleep_end_min = np.random.normal(mu_send, sd_send)
             record["Sleep_End"] = sleep_end_min
-            
-            # Sleep Onset Latency (based on mean, SD from Natale et al., 2009) 
-            mu_sol, sd_sol = get_params("SOL")
-            shape_sol = (mu_sol / sd_sol) ** 2
-            scale_sol = sd_sol ** 2 / mu_sol
-            sol = np.random.gamma(shape_sol, scale_sol)
             record["SOL"] = sol
-            
-            # Wake After Sleep Onset (based on mean, SD from Natale et al., 2009)
-            mu_waso, sd_waso = get_params("WASO")
-            shape_waso = (mu_waso / sd_waso) ** 2
-            scale_waso = sd_waso ** 2 / mu_waso
-            waso = np.random.gamma(shape_waso, scale_waso)
             record["WASO"] = waso
-            
-            # Derived sleep parameters:
-            
-            # Time between waking up and getting out of bed
-            wait_time = np.clip(np.random.normal(15, 10), 5, 30)
-            out_of_bed_min = sleep_end_min + wait_time
             record["Out_of_Bed"] = out_of_bed_min
-            
-            # Time in bed
-            tib = out_of_bed_min - lights_off_min # Out of bed includes time between waking up & getting up
             record["TIB"] = tib
-            
-            # TWT
-            twt = sol + waso
             record["TWT"] = twt
-            
-            # Total Sleep Time
-            tst = tib - (sol + waso)
             record["TST"] = tst
                      
             # Sleep efficiency
@@ -254,11 +265,12 @@ def generate_time_series_sleepdata(parameter_path, output_path, days=21, n_parti
 
 # For standalone execution:
 def main():
-    parameter_path = base_path /"input/natale2009_control_group_sleep_main_parameters.xlsx"
-    # parameter_path = base_path /"input/natale2009_insomnia_group_sleep_main_parameters.xlsx"
+    # parameter_path = base_path /"input/natale2009_control_group_sleep_main_parameters.xlsx"
+    parameter_path = base_path /"input/natale2009_insomnia_group_sleep_main_parameters.xlsx"
 
-    output_path = base_path /"output/synthetic_sleepdata_timeseries_control_augmented.xlsx"
-    # output_path = base_path /"output/synthetic_sleepdata_timeseries_insomnia_augmented.xlsx"
+    # output_path = base_path /"output/synthetic_sleepdata_timeseries_control_augmented.xlsx"
+    output_path = base_path /"output/synthetic_sleepdata_timeseries_insomnia_augmented.xlsx"
+    
     generate_time_series_sleepdata(parameter_path, output_path)
     
     
