@@ -23,7 +23,7 @@ simulates 21 consecutive days per participant and includes variables such as:
 - A simulated date sequence starting in March 2024
 - Additional subjective and behavioral diary variables (based on plausible distributions instead of real data, as described above)
 
-These enhancements are designed for integration into the 'prepostpleep_studypipeline' project (under development).
+
 
 The output is saved as Excel (.xlsx).
 
