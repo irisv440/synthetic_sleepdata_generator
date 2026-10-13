@@ -28,7 +28,6 @@ GENERATORS = {"basic": generate_basic, "advanced": generate_advanced}
 GROUPS = ["control", "insomnia"]
 
 
-#@pytest.fixture(params=["control", "insomnia"])
 @pytest.fixture(
     params=[(gen, group) for gen in GENERATORS for group in GROUPS],
     ids=lambda p: f"{p[0]}-{p[1]}",)
